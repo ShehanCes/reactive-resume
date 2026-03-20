@@ -37,6 +37,12 @@ function createMcpServer() {
   return server;
 }
 
+class AuthError extends Error {
+  constructor() {
+    super("Unauthorized");
+  }
+}
+
 async function authenticateRequest(request: Request): Promise<void> {
   // Try OAuth Bearer token first (for claude.ai and other MCP OAuth clients)
   const authHeader = request.headers.get("authorization");
@@ -48,11 +54,15 @@ async function authenticateRequest(request: Request): Promise<void> {
   // Fall back to API key authentication
   const apiKey = request.headers.get("x-api-key");
   if (apiKey) {
-    const result = await auth.api.verifyApiKey({ body: { key: apiKey } });
-    if (result.valid) return;
+    try {
+      const result = await auth.api.verifyApiKey({ body: { key: apiKey } });
+      if (result.valid) return;
+    } catch {
+      // Invalid or malformed key — fall through to AuthError
+    }
   }
 
-  throw new Error("Unauthorized");
+  throw new AuthError();
 }
 
 export const Route = createFileRoute("/mcp/")({
@@ -71,12 +81,7 @@ export const Route = createFileRoute("/mcp/")({
 
           return await transport.handleRequest(request);
         } catch (error) {
-          console.error("[MCP]", error);
-
-          const message = error instanceof Error ? error.message : String(error);
-          const isAuthError = message === "Unauthorized";
-
-          if (isAuthError) {
+          if (error instanceof AuthError) {
             return new Response(JSON.stringify({
               id: null,
               jsonrpc: "2.0",
@@ -90,12 +95,14 @@ export const Route = createFileRoute("/mcp/")({
             });
           }
 
+          console.error("[MCP]", error);
+
           return Response.json({
             id: null,
             jsonrpc: "2.0",
             error: {
               code: -32603,
-              message: `Error handling request: ${message}`,
+              message: `Error handling request: ${error instanceof Error ? error.message : String(error)}`,
             },
           });
         }
