@@ -1,10 +1,8 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "7c0d18a2-1add-4e16-8542-a5c06a8e5e4c",
-  "prevIds": [
-    "c9c88ad3-f804-4cd4-883a-afe376d46792"
-  ],
+  "id": "35e0fff4-f296-413c-8ab2-18fc66146d8f",
+  "prevIds": ["c9c88ad3-f804-4cd4-883a-afe376d46792"],
   "ddl": [
     {
       "isRlsEnabled": false,
@@ -2634,14 +2632,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "account_user_id_user_id_fkey",
@@ -2651,14 +2645,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "reference_id"
-      ],
+      "columns": ["reference_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "apikey_user_id_user_id_fkey",
@@ -2668,14 +2658,23 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "session_id"
-      ],
+      "columns": ["client_id"],
+      "schemaTo": "public",
+      "tableTo": "oauth_client",
+      "columnsTo": ["client_id"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "oauth_access_token_client_id_oauth_client_client_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "oauth_access_token"
+    },
+    {
+      "nameExplicit": false,
+      "columns": ["session_id"],
       "schemaTo": "public",
       "tableTo": "session",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "oauth_access_token_session_id_session_id_fkey",
@@ -2685,14 +2684,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "oauth_access_token_user_id_user_id_fkey",
@@ -2702,16 +2697,12 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "refresh_id"
-      ],
+      "columns": ["refresh_id"],
       "schemaTo": "public",
       "tableTo": "oauth_refresh_token",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
+      "onDelete": "CASCADE",
       "name": "oauth_access_token_refresh_id_oauth_refresh_token_id_fkey",
       "entityType": "fks",
       "schema": "public",
@@ -2719,14 +2710,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "oauth_client_user_id_user_id_fkey",
@@ -2736,14 +2723,23 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["client_id"],
+      "schemaTo": "public",
+      "tableTo": "oauth_client",
+      "columnsTo": ["client_id"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "oauth_consent_client_id_oauth_client_client_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "oauth_consent"
+    },
+    {
+      "nameExplicit": false,
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "oauth_consent_user_id_user_id_fkey",
@@ -2753,14 +2749,23 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "session_id"
-      ],
+      "columns": ["client_id"],
+      "schemaTo": "public",
+      "tableTo": "oauth_client",
+      "columnsTo": ["client_id"],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "oauth_refresh_token_client_id_oauth_client_client_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "oauth_refresh_token"
+    },
+    {
+      "nameExplicit": false,
+      "columns": ["session_id"],
       "schemaTo": "public",
       "tableTo": "session",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "oauth_refresh_token_session_id_session_id_fkey",
@@ -2770,14 +2775,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "oauth_refresh_token_user_id_user_id_fkey",
@@ -2787,14 +2788,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "passkey_user_id_user_id_fkey",
@@ -2804,14 +2801,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "resume_user_id_user_id_fkey",
@@ -2821,14 +2814,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "resume_id"
-      ],
+      "columns": ["resume_id"],
       "schemaTo": "public",
       "tableTo": "resume",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "resume_statistics_resume_id_resume_id_fkey",
@@ -2838,14 +2827,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "session_user_id_user_id_fkey",
@@ -2855,14 +2840,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "two_factor_user_id_user_id_fkey",
@@ -2871,9 +2852,7 @@
       "table": "two_factor"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "account_pkey",
       "schema": "public",
@@ -2881,9 +2860,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "apikey_pkey",
       "schema": "public",
@@ -2891,9 +2868,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "jwks_pkey",
       "schema": "public",
@@ -2901,9 +2876,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "oauth_access_token_pkey",
       "schema": "public",
@@ -2911,9 +2884,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "oauth_client_pkey",
       "schema": "public",
@@ -2921,9 +2892,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "oauth_consent_pkey",
       "schema": "public",
@@ -2931,9 +2900,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "oauth_refresh_token_pkey",
       "schema": "public",
@@ -2941,9 +2908,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "passkey_pkey",
       "schema": "public",
@@ -2951,9 +2916,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "resume_pkey",
       "schema": "public",
@@ -2961,9 +2924,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "resume_statistics_pkey",
       "schema": "public",
@@ -2971,9 +2932,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "session_pkey",
       "schema": "public",
@@ -2981,9 +2940,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "two_factor_pkey",
       "schema": "public",
@@ -2991,9 +2948,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "user_pkey",
       "schema": "public",
@@ -3001,9 +2956,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "verification_pkey",
       "schema": "public",
@@ -3012,10 +2965,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "slug",
-        "user_id"
-      ],
+      "columns": ["slug", "user_id"],
       "nullsNotDistinct": false,
       "name": "resume_slug_user_id_unique",
       "entityType": "uniques",
@@ -3024,9 +2974,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "token"
-      ],
+      "columns": ["token"],
       "nullsNotDistinct": false,
       "name": "oauth_access_token_token_key",
       "schema": "public",
@@ -3035,9 +2983,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "client_id"
-      ],
+      "columns": ["client_id"],
       "nullsNotDistinct": false,
       "name": "oauth_client_client_id_key",
       "schema": "public",
@@ -3046,9 +2992,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "resume_id"
-      ],
+      "columns": ["resume_id"],
       "nullsNotDistinct": false,
       "name": "resume_statistics_resume_id_key",
       "schema": "public",
@@ -3057,9 +3001,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "token"
-      ],
+      "columns": ["token"],
       "nullsNotDistinct": false,
       "name": "session_token_key",
       "schema": "public",
@@ -3068,9 +3010,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "email"
-      ],
+      "columns": ["email"],
       "nullsNotDistinct": false,
       "name": "user_email_key",
       "schema": "public",
@@ -3079,9 +3019,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "username"
-      ],
+      "columns": ["username"],
       "nullsNotDistinct": false,
       "name": "user_username_key",
       "schema": "public",
@@ -3090,9 +3028,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "display_username"
-      ],
+      "columns": ["display_username"],
       "nullsNotDistinct": false,
       "name": "user_display_username_key",
       "schema": "public",
@@ -3101,9 +3037,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "identifier"
-      ],
+      "columns": ["identifier"],
       "nullsNotDistinct": false,
       "name": "verification_identifier_key",
       "schema": "public",

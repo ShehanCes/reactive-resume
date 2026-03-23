@@ -1,7 +1,6 @@
-import crypto from "node:crypto";
-
 import { createFileRoute } from "@tanstack/react-router";
 import { eq } from "drizzle-orm";
+import crypto from "node:crypto";
 
 import { auth, authBaseUrl } from "@/integrations/auth/config";
 import { db } from "@/integrations/drizzle/client";
@@ -35,11 +34,7 @@ export const Route = createFileRoute("/auth/oauth")({
             return Response.json({ error: "missing client_id or redirect_uri" }, { status: 400 });
           }
 
-          const [client] = await db
-            .select()
-            .from(oauthClient)
-            .where(eq(oauthClient.clientId, clientId))
-            .limit(1);
+          const [client] = await db.select().from(oauthClient).where(eq(oauthClient.clientId, clientId)).limit(1);
 
           if (!client) {
             return Response.json({ error: "invalid client" }, { status: 400 });

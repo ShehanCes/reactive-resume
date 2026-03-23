@@ -64,7 +64,7 @@ export const publicProcedure = base.use(async ({ context, next }) => {
 
   const user = apiKey
     ? await getUserFromApiKey(apiKey)
-    : (await getUserFromBearerToken(headers)) ?? (await getUserFromHeaders(headers));
+    : ((await getUserFromBearerToken(headers)) ?? (await getUserFromHeaders(headers)));
 
   return next({
     context: {

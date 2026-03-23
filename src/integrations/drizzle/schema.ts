@@ -334,7 +334,10 @@ export const oauthRefreshToken = pg.pgTable(
       .primaryKey()
       .$defaultFn(() => generateId()),
     token: pg.text("token").notNull(),
-    clientId: pg.text("client_id").notNull(),
+    clientId: pg
+      .text("client_id")
+      .notNull()
+      .references(() => oauthClient.clientId, { onDelete: "cascade" }),
     sessionId: pg.uuid("session_id").references(() => session.id, { onDelete: "set null" }),
     userId: pg
       .uuid("user_id")
@@ -359,11 +362,14 @@ export const oauthAccessToken = pg.pgTable(
       .primaryKey()
       .$defaultFn(() => generateId()),
     token: pg.text("token").notNull().unique(),
-    clientId: pg.text("client_id").notNull(),
+    clientId: pg
+      .text("client_id")
+      .notNull()
+      .references(() => oauthClient.clientId, { onDelete: "cascade" }),
     sessionId: pg.uuid("session_id").references(() => session.id, { onDelete: "set null" }),
     userId: pg.uuid("user_id").references(() => user.id, { onDelete: "cascade" }),
     referenceId: pg.text("reference_id"),
-    refreshId: pg.uuid("refresh_id").references(() => oauthRefreshToken.id),
+    refreshId: pg.uuid("refresh_id").references(() => oauthRefreshToken.id, { onDelete: "cascade" }),
     expiresAt: pg.timestamp("expires_at", { withTimezone: true }),
     createdAt: pg.timestamp("created_at", { withTimezone: true }).defaultNow(),
     scopes: pg.text("scopes").array().notNull(),
@@ -379,7 +385,10 @@ export const oauthConsent = pg.pgTable(
       .notNull()
       .primaryKey()
       .$defaultFn(() => generateId()),
-    clientId: pg.text("client_id").notNull(),
+    clientId: pg
+      .text("client_id")
+      .notNull()
+      .references(() => oauthClient.clientId, { onDelete: "cascade" }),
     userId: pg.uuid("user_id").references(() => user.id, { onDelete: "cascade" }),
     referenceId: pg.text("reference_id"),
     scopes: pg.text("scopes").array().notNull(),
@@ -427,6 +436,14 @@ export const relations = defineRelations(
         from: r.session.userId,
         to: r.user.id,
       }),
+      oauthRefreshTokens: r.many.oauthRefreshToken({
+        from: r.session.id,
+        to: r.oauthRefreshToken.sessionId,
+      }),
+      oauthAccessTokens: r.many.oauthAccessToken({
+        from: r.session.id,
+        to: r.oauthAccessToken.sessionId,
+      }),
     },
     account: {
       user: r.one.user({
@@ -472,6 +489,18 @@ export const relations = defineRelations(
       user: r.one.user({
         from: r.oauthClient.userId,
         to: r.user.id,
+      }),
+      oauthRefreshTokens: r.many.oauthRefreshToken({
+        from: r.oauthClient.clientId,
+        to: r.oauthRefreshToken.clientId,
+      }),
+      oauthAccessTokens: r.many.oauthAccessToken({
+        from: r.oauthClient.clientId,
+        to: r.oauthAccessToken.clientId,
+      }),
+      oauthConsents: r.many.oauthConsent({
+        from: r.oauthClient.clientId,
+        to: r.oauthConsent.clientId,
       }),
     },
     oauthRefreshToken: {

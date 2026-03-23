@@ -46,6 +46,7 @@ class AuthError extends Error {
 async function authenticateRequest(request: Request): Promise<void> {
   // Try OAuth Bearer token first (for claude.ai and other MCP OAuth clients)
   const authHeader = request.headers.get("authorization");
+
   if (authHeader?.startsWith("Bearer ")) {
     const payload = await verifyOAuthToken(authHeader.slice(7));
     if (payload?.sub) return;
@@ -53,6 +54,7 @@ async function authenticateRequest(request: Request): Promise<void> {
 
   // Fall back to API key authentication
   const apiKey = request.headers.get("x-api-key");
+
   if (apiKey) {
     try {
       const result = await auth.api.verifyApiKey({ body: { key: apiKey } });

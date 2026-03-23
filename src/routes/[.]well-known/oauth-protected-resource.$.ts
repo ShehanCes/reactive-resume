@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { authClient } from "@/integrations/auth/client";
 import { authBaseUrl } from "@/integrations/auth/config";
 
-export const Route = createFileRoute("/.well-known/oauth-protected-resource")({
+export const Route = createFileRoute("/.well-known/oauth-protected-resource/$")({
   server: {
     handlers: {
       GET: async () => {

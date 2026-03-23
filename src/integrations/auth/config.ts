@@ -1,12 +1,12 @@
-import type { JWTPayload } from "jose";
 import type { GenericOAuthConfig } from "better-auth/plugins";
+import type { JWTPayload } from "jose";
 
 import { apiKey } from "@better-auth/api-key";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { dash } from "@better-auth/infra";
+import { oauthProvider } from "@better-auth/oauth-provider";
 import { BetterAuthError, betterAuth } from "better-auth";
 import { verifyAccessToken } from "better-auth/oauth2";
-import { oauthProvider } from "@better-auth/oauth-provider";
 import { jwt, openAPI } from "better-auth/plugins";
 import { genericOAuth } from "better-auth/plugins/generic-oauth";
 import { twoFactor } from "better-auth/plugins/two-factor";
@@ -23,10 +23,19 @@ import { sendEmail } from "../email/service";
 
 export const authBaseUrl = process.env.BETTER_AUTH_URL ?? env.APP_URL;
 
+function getOAuthAudiences(): string[] {
+  const base = authBaseUrl.replace(/\/$/, "");
+
+  return [base, `${base}/`, `${base}/mcp`, `${base}/mcp/`];
+}
+
 export async function verifyOAuthToken(token: string): Promise<JWTPayload> {
-  return verifyAccessToken(token, {
+  return await verifyAccessToken(token, {
     jwksUrl: `${authBaseUrl}/api/auth/jwks`,
-    verifyOptions: { issuer: `${authBaseUrl}/api/auth`, audience: [authBaseUrl, `${authBaseUrl}/mcp`, `${authBaseUrl}/mcp/`] },
+    verifyOptions: {
+      issuer: `${authBaseUrl}/api/auth`,
+      audience: getOAuthAudiences(),
+    },
   });
 }
 
@@ -243,66 +252,20 @@ const getAuthConfig = () => {
     },
 
     plugins: [
-      openAPI(),
       jwt(),
+      openAPI(),
+      genericOAuth({ config: authConfigs }),
+      twoFactor({ issuer: "Reactive Resume" }),
+      apiKey({ enableSessionForAPIKeys: true, rateLimit: { enabled: false } }),
+      dash({ apiKey: env.BETTER_AUTH_API_KEY, activityTracking: { enabled: true } }),
       oauthProvider({
         loginPage: "/auth/oauth",
         consentPage: "/auth/oauth",
         allowDynamicClientRegistration: true,
         allowUnauthenticatedClientRegistration: true,
-        validAudiences: [authBaseUrl, `${authBaseUrl}/mcp`, `${authBaseUrl}/mcp/`],
+        silenceWarnings: { oauthAuthServerConfig: true },
+        validAudiences: getOAuthAudiences(),
       }),
-      {
-        id: "mcp-registration-defaults",
-        onRequest: async (request) => {
-          const { pathname } = new URL(request.url);
-          if (!pathname.includes("/oauth2/")) return;
-
-          // Default to public client for unauthenticated registration (MCP clients)
-          if (request.method === "POST" && pathname.endsWith("/oauth2/register")) {
-            const body = await request.clone().json().catch(() => null);
-            if (body) {
-              body.token_endpoint_auth_method = "none";
-              const headers = new Headers(request.headers);
-              headers.delete("content-length");
-              return {
-                disableCSRFCheck: true,
-                request: new Request(request.url, {
-                  method: "POST",
-                  headers,
-                  body: JSON.stringify(body),
-                }),
-              };
-            }
-          }
-
-          // Strip prompt=consent from authorize requests so skipConsent on
-          // the client takes effect (prompt=consent overrides skipConsent)
-          if (request.method === "GET" && pathname.endsWith("/oauth2/authorize")) {
-            const url = new URL(request.url);
-            if (url.searchParams.get("prompt") === "consent") {
-              url.searchParams.delete("prompt");
-              return { disableCSRFCheck: true, request: new Request(url.toString(), request) };
-            }
-          }
-
-          // Disable CSRF for all other OAuth2 endpoints (called by external MCP clients without cookies)
-          return { disableCSRFCheck: true };
-        },
-        databaseHooks: {
-          oauthClient: {
-            create: {
-              before: async (client) => {
-                return { data: { ...client, skipConsent: true } };
-              },
-            },
-          },
-        },
-      },
-      genericOAuth({ config: authConfigs }),
-      twoFactor({ issuer: "Reactive Resume" }),
-      apiKey({ enableSessionForAPIKeys: true, rateLimit: { enabled: false } }),
-      dash({ apiKey: env.BETTER_AUTH_API_KEY, activityTracking: { enabled: true } }),
       username({
         minUsernameLength: 3,
         maxUsernameLength: 64,
