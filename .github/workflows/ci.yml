@@ -16,6 +16,24 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd="pg_isready -U postgres -d postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      # These are required by the app's env schema. Use safe placeholders for CI.
+      APP_URL: "http://localhost:3000"
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/postgres"
+      AUTH_SECRET: "ci-change-me"
+      PRINTER_ENDPOINT: "ws://localhost:4000?token=1234567890"
 
     steps:
       - name: Checkout
