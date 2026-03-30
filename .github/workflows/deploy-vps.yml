@@ -11,6 +11,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      REPO_TOKEN: ${{ secrets.REPO_READ_TOKEN }}
 
     steps:
       - name: Deploy via SSH
@@ -19,12 +21,12 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          script_stop: true
+          envs: REPO_TOKEN
           script: |
             set -euo pipefail
 
             DEPLOY_DIR="/var/www/shehan/vivify-cv"
-            REPO_URL="https://github.com/ShehanCes/Vivify-CV.git"
+            REPO_URL="https://x-access-token:${REPO_TOKEN}@github.com/${{ github.repository }}.git"
 
             if [ ! -d "$DEPLOY_DIR/.git" ]; then
               mkdir -p "$DEPLOY_DIR"
@@ -32,6 +34,7 @@ jobs:
             fi
 
             cd "$DEPLOY_DIR"
+            git remote set-url origin "$REPO_URL"
 
             git fetch --prune
             git pull --rebase origin main
