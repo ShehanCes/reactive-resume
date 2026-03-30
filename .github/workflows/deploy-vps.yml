@@ -1,0 +1,50 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            DEPLOY_DIR="/opt/vivify-cv"
+            REPO_URL="https://github.com/ShehanCes/Vivify-CV.git"
+
+            if [ ! -d "$DEPLOY_DIR/.git" ]; then
+              mkdir -p "$DEPLOY_DIR"
+              git clone --depth=1 --branch main "$REPO_URL" "$DEPLOY_DIR"
+            fi
+
+            cd "$DEPLOY_DIR"
+
+            git fetch --prune
+            git pull --rebase origin main
+
+            if command -v docker-compose >/dev/null 2>&1; then
+              docker-compose up -d --remove-orphans --pull always
+            else
+              docker compose up -d --remove-orphans --pull always
+            fi
+
+            if command -v docker-compose >/dev/null 2>&1; then
+              docker-compose ps
+            else
+              docker compose ps
+            fi
+
